@@ -54,7 +54,20 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
-        self.storage[i] = value
+        if self.storage[i] is not None:
+            curr = self.storage[i]
+            while curr:
+                # Overwrites the value
+                if curr.key == key:
+                    curr.value = value
+                    return
+                # Adds and link new entry
+                if curr.next is None:
+                    curr.next = HashTableEntry(key, value)
+                    return
+                curr = curr.next
+        # Starts a new linked list
+        self.storage[i] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -67,7 +80,13 @@ class HashTable:
         i = self.hash_index(key)
         if not self.storage[i]:
             print("key is not found")
-        self.storage[i] = None
+
+        curr = self.storage[i]
+        while curr:
+            if curr.key == key:
+                curr.value = None
+                return
+            curr = curr.next
 
     def get(self, key):
         """
@@ -80,7 +99,11 @@ class HashTable:
         i = self.hash_index(key)
         if not self.storage[i]:
             return None
-        return self.storage[i]
+        curr = self.storage[i]
+        while curr:
+            if curr.key == key:
+                return curr.value
+            curr = curr.next
 
     def resize(self):
         """
@@ -89,14 +112,14 @@ class HashTable:
 
         Implement this.
         """
-        self.capacity *= 2
-        newArr = [None] * self.capacity
-        for i, v in enumerate(self.storage):
-            while i:
-                newi = self.hash_index(v)
-                newArr[newi] = v
-            i += 1
-        return v
+        # self.capacity *= 2
+        # newArr = [None] * self.capacity
+        # for i, v in enumerate(self.storage):
+        #     while i:
+        #         newi = self.hash_index(v)
+        #         newArr[newi] = v
+        #     i += 1
+        # return v
 
 
 if __name__ == "__main__":
