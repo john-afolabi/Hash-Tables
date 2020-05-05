@@ -2,7 +2,6 @@ class HashTableEntry:
     """
     Hash Table entry, as a linked list node.
     """
-
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -16,6 +15,9 @@ class HashTable:
 
     Implement this.
     """
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
     def fnv1(self, key):
         """
@@ -30,6 +32,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
+        hval = 5381
+        for c in key:
+            hval = ((hval << 5) + hval) + ord(c)
+        return hval & 0xffffffff
 
     def hash_index(self, key):
         """
@@ -47,6 +53,8 @@ class HashTable:
 
         Implement this.
         """
+        i = self.hash_index(key)
+        self.storage[i] = value
 
     def delete(self, key):
         """
@@ -56,6 +64,8 @@ class HashTable:
 
         Implement this.
         """
+        i = self.hash_index(key)
+        self.storage[i] = None
 
     def get(self, key):
         """
@@ -65,6 +75,8 @@ class HashTable:
 
         Implement this.
         """
+        i = self.hash_index(key)
+        return self.storage[i]
 
     def resize(self):
         """
@@ -73,6 +85,15 @@ class HashTable:
 
         Implement this.
         """
+        self.capacity *= 2
+        newArr = [None] * self.capacity
+        for i, v in enumerate(self.storage):
+            while i:
+                newi = self.hash_index(v)
+                newArr[newi] = v
+            i += 1
+        return v
+
 
 if __name__ == "__main__":
     ht = HashTable(2)
@@ -99,5 +120,3 @@ if __name__ == "__main__":
     print(ht.get("line_1"))
     print(ht.get("line_2"))
     print(ht.get("line_3"))
-
-    print("")
