@@ -65,6 +65,8 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
+        if not self.storage[i]:
+            print("key is not found")
         self.storage[i] = None
 
     def get(self, key):
@@ -76,6 +78,8 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
+        if not self.storage[i]:
+            return None
         return self.storage[i]
 
     def resize(self):
