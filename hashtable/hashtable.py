@@ -66,11 +66,13 @@ class HashTable:
                 if curr.next is None:
                     curr.next = HashTableEntry(key, value)
                     self.el += 1
+                    self.resize()
                     return
                 curr = curr.next
         # Starts a new linked list
         self.storage[i] = HashTableEntry(key, value)
         self.el += 1
+        self.resize()
 
     def delete(self, key):
         """
@@ -94,6 +96,8 @@ class HashTable:
                 self.storage[i] = curr.next
             else:
                 prev.next = curr.next
+            self.el -= 1
+            self.resize()
         else:
             print("key is not found")
 
@@ -116,16 +120,18 @@ class HashTable:
 
     def resize(self):
         """
-        Doubles the capacity of the hash table and
-        rehash all key/value pairs.
+        Doubles or halves capacity of the hash table based 
+        on load factor and rehash all key/value pairs.
 
         Implement this.
         """
         self.lf = self.el / self.capacity
         if self.lf > 0.7:
             self.capacity *= 2
-        if self.lf < 0.2:
+        elif self.lf < 0.2:
             self.capacity //= 2
+        else:
+            return
 
         new_store = [None] * self.capacity
         for v in self.storage:
