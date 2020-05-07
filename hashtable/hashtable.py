@@ -78,15 +78,21 @@ class HashTable:
         Implement this.
         """
         i = self.hash_index(key)
+        curr = self.storage[i]
+        prev = self.storage[i]
         if not self.storage[i]:
             print("key is not found")
 
-        curr = self.storage[i]
-        while curr:
-            if curr.key == key:
-                curr.value = None
-                return
+        while curr and curr.key is not key:
+            prev = curr
             curr = curr.next
+        if curr and curr.key is key:
+            if curr is self.storage[i]:
+                self.storage[i] = curr.next
+            else:
+                prev.next = curr.next
+        else:
+            print("key is not found")
 
     def get(self, key):
         """
