@@ -18,6 +18,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.storage = [None] * capacity
+        self.el = 0
 
     def fnv1(self, key):
         """
@@ -64,10 +65,12 @@ class HashTable:
                 # Adds and link new entry
                 if curr.next is None:
                     curr.next = HashTableEntry(key, value)
+                    self.el += 1
                     return
                 curr = curr.next
         # Starts a new linked list
         self.storage[i] = HashTableEntry(key, value)
+        self.el += 1
 
     def delete(self, key):
         """
@@ -118,14 +121,25 @@ class HashTable:
 
         Implement this.
         """
-        # self.capacity *= 2
-        # newArr = [None] * self.capacity
-        # for i, v in enumerate(self.storage):
-        #     while i:
-        #         newi = self.hash_index(v)
-        #         newArr[newi] = v
-        #     i += 1
-        # return v
+        self.lf = self.el / self.capacity
+        if self.lf > 0.7:
+            self.capacity *= 2
+        if self.lf < 0.2:
+            self.capacity //= 2
+
+        new_store = [None] * self.capacity
+        for v in self.storage:
+            while v:
+                i = self.hash_index(v.key)
+                if new_store[i]:
+                    curr = new_store[i]
+                    while curr.next:
+                        curr = curr.next
+                    curr.next = HashTableEntry(v.key, v.value)
+                else:
+                    new_store[i] = HashTableEntry(v.key, v.value)
+                v = v.next
+        self.storage = new_store
 
 
 if __name__ == "__main__":
